@@ -39,6 +39,7 @@ namespace tcp_com
                     string msg = Console.ReadLine();
                     Message newMessage = new Message(msg, Username);
                     string jsonMessage = JsonConvert.SerializeObject(newMessage);
+                  
 
                     // Envío de datos
                     var stream = client.GetStream();

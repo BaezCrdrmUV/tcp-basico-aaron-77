@@ -2,6 +2,8 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Newtonsoft.Json;
+
 
 namespace tcp_com
 {
@@ -30,6 +32,7 @@ namespace tcp_com
             {
                 while(true)
                 {
+                    Console.WriteLine("la fecha es {0}",DateTime.Now.ToShortDateString());
                     Console.WriteLine("Esperando conexión del cliente...");
                     // Empieza a escuchar
                     var clientTask = listener.AcceptSocketAsync();
@@ -51,7 +54,8 @@ namespace tcp_com
                             client.Receive(buffer);
 
                             msg = Encoding.UTF8.GetString(buffer);
-                            Console.WriteLine(msg);
+                            Message mensaje = JsonConvert.DeserializeObject<Message>(msg);
+                            Console.WriteLine("{0}:{1}> {2}",mensaje.User,mensaje.Fecha,mensaje.MessageString);
                         }
                         Console.WriteLine("Cerrando conexión");
                         client.Dispose();
