@@ -29,6 +29,8 @@ namespace tcp_com
 
         public void Chat()
         {
+            Console.WriteLine("IP: " + IP);
+            Console.WriteLine("Port: " + Port.ToString());
             client.Connect(IP, Port);   
             Console.WriteLine("Conectado");
 
@@ -38,9 +40,24 @@ namespace tcp_com
                 {
                     string msg = Console.ReadLine();
                     Message newMessage = new Message(msg, Username);
-                    string jsonMessage = JsonConvert.SerializeObject(newMessage);
+                    newMessage.idMessage = Guid.NewGuid().ToString();
                   
-
+                    string fecha =  DateTime.Now.ToString("dd-MM-yyyy");
+                    newMessage.Date = fecha;
+                    
+                    if(newMessage.MessageString.StartsWith("-r")){
+                        
+                        newMessage.Type = "remover";
+                    }else if(newMessage.MessageString.StartsWith("-e")){
+                        
+                        newMessage.Type = "editar";
+                    }else if(newMessage.MessageString.StartsWith("-bt")){
+                        newMessage.Type="buscarPorUsuario";
+                    }else if(newMessage.MessageString.StartsWith("-b")){
+                            newMessage.Type = "buscar";
+                    }
+                    
+                    string jsonMessage = JsonConvert.SerializeObject(newMessage);
                     // Envío de datos
                     var stream = client.GetStream();
                     byte[] data = Encoding.UTF8.GetBytes(jsonMessage);
@@ -56,8 +73,11 @@ namespace tcp_com
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error {0}", ex.Message);
+                    break;
                 }
             }
+            Console.WriteLine("Desconectado");
+            return;
         }
     }
 }
